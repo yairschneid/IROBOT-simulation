@@ -18,8 +18,12 @@ namespace irobot_simulation
 
         double TotalTime_CCPP_Set = 0.0, TotalTime_backNforth_Set = 0.0,TotalTime_boundarySweep_Set= 0.0; 
         double TotalCoverage_CCPP_Set = 0.0, TotalCoverage_backNforth_Set= 0.0, TotalCoverage_boundarySweep_Set= 0.0;
-        double Average_backNforth, Average_boundarySweep, Average_newMethod; 
-     
+        double Average_backNforth, Average_boundarySweep, Average_newMethod;
+
+        private void label20_Click(object sender, EventArgs e)
+        {
+
+        }
 
         private void label15_Click(object sender, EventArgs e)
         {
