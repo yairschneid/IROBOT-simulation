@@ -13,12 +13,17 @@ namespace irobot_simulation
     public partial class simulation : Form
     {
         int Lshort = 0, Llong = 0;
-        double Vd = 0.0, Vr = 0, R = 0, pi = 3.14;
+        double Vd = 0.0, Vr = 0, R = 0, pi = 3.14, Radius=0;
         int selectRand = 0;
 
         double TotalTime_CCPP_Set = 0.0, TotalTime_backNforth_Set = 0.0,TotalTime_boundarySweep_Set= 0.0; 
         double TotalCoverage_CCPP_Set = 0.0, TotalCoverage_backNforth_Set= 0.0, TotalCoverage_boundarySweep_Set= 0.0;
         double Average_backNforth, Average_boundarySweep, Average_newMethod;
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
 
         private void label20_Click(object sender, EventArgs e)
         {
@@ -47,87 +52,186 @@ namespace irobot_simulation
        
         private void button1_Click(object sender, EventArgs e)
         {
-            dgv.Rows.Clear();
-            testdgv.Rows.Clear();
-            dgv.Refresh();
-            testdgv.Rows.Clear();
-
-         
-            // intialize the variables
-            TotalTime_CCPP_Set = 0.0;
-            TotalTime_backNforth_Set = 0.0;
-            TotalTime_boundarySweep_Set = 0.0;
-            TotalCoverage_CCPP_Set = 0.0;
-            TotalCoverage_backNforth_Set = 0.0;
-            TotalCoverage_boundarySweep_Set = 0.0;
-            Average_backNforth = 0.0;
-            Average_boundarySweep = 0.0;
-            Average_newMethod =0.0;
-
-            // rand number to choose quantity of each method 
-            var rnd = new Random(Guid.NewGuid().GetHashCode());
-            selectRand = rnd.Next(0, 11);
-            raA.Text = selectRand.ToString();
-            raB.Text = (10 - selectRand).ToString();
-
-            for (int j = 0; j < 10; j++)
+            if (checkBox1.Checked) // Room is Round
             {
-                //intialize the variables each set
+                dgv.Rows.Clear();
+                testdgv.Rows.Clear();
+                dgv.Refresh();
+                testdgv.Rows.Clear();
+
+                // intialize the variables
+
+
+                // rand number to choose quantity of each method 
+                var rnd = new Random(Guid.NewGuid().GetHashCode());
+                selectRand = rnd.Next(0, 11);
+                raA.Text = selectRand.ToString();
+                raB.Text = (10 - selectRand).ToString();
+
+                for (int j = 0; j < 10; j++)
+                {
+                    //intialize the variables each set
+                    TotalTime_CCPP_Set = 0.0;
+                    TotalTime_backNforth_Set = 0.0;
+                    TotalTime_boundarySweep_Set = 0.0;
+                    TotalCoverage_CCPP_Set = 0.0;
+                    TotalCoverage_backNforth_Set = 0.0;
+                    TotalCoverage_boundarySweep_Set = 0.0;
+
+
+                    for (int i = 0; i < 1000; i++)
+                    {
+                        // randome numbers aaa
+                        rnd = new Random(Guid.NewGuid().GetHashCode());
+                        Lshort = rnd.Next(5, 51);
+                        Llong = rnd.Next(10, 151);
+                        Radius = Llong * pi;
+                        Vd = rnd.NextDouble() * (0.50 - 0.28) + 0.28;
+                        Vr = rnd.Next(75, 136);
+                        R = rnd.NextDouble() * (0.50 - 0.40) + 0.40;
+
+                        testdgv.Columns[1].HeaderText = "Radius";
+                        testdgv.Rows.Add(i, Radius, Llong, Vr, Vd, R);
+
+                        // call to functions to calculate
+                        //CCPP_Func(Lshort, Llong, Vd, Vr, R, pi);
+                        backNforthRoundRoom_Func(Radius, Llong, Vd, Vr, R, pi, j);
+                        boundarySweepRoundRoom_Func(Radius, Llong, Vd, Vr, R, pi, j);
+
+                        dgv2.Rows.Add(i, Math.Round(temp_backNforth_TotalTime, 1), Math.Round(temp_boundarySweep_TotalTime, 1), Math.Round(temp_CCPP_TotalTime, 1));
+                    }
+
+                    if (j <= selectRand)
+                    {
+                        dgv.Rows.Add(j + 1, Math.Round((TotalTime_backNforth_Set / 1000) / 3, 1), Math.Round((TotalTime_boundarySweep_Set / 1000) / 5, 1), Math.Round((TotalTime_CCPP_Set / 1000) / 3, 1));
+                        Average_backNforth += ((TotalTime_backNforth_Set / 1000) / 3);
+                        Average_boundarySweep += ((TotalTime_boundarySweep_Set / 1000) / 5);
+                        Average_newMethod += ((TotalTime_backNforth_Set / 1000) / 3);
+                    }
+                    else
+                    {
+                        dgv.Rows.Add(j + 1, Math.Round((TotalTime_backNforth_Set / 1000) / 3, 1), Math.Round((TotalTime_boundarySweep_Set / 1000) / 5, 1), Math.Round((TotalTime_CCPP_Set / 1000) / 5, 1));
+                        Average_backNforth += ((TotalTime_backNforth_Set / 1000) / 3);
+                        Average_boundarySweep += ((TotalTime_boundarySweep_Set / 1000) / 5);
+                        Average_newMethod += ((TotalTime_boundarySweep_Set / 1000) / 5);
+                    }
+                }
+
+                dgv.Rows.Add("Average", Math.Round((Average_backNforth / 10), 1), Math.Round((Average_boundarySweep / 10), 1), Math.Round((Average_newMethod / 10), 1));
+
+            }
+            else
+            {
+                dgv.Rows.Clear();
+                testdgv.Rows.Clear();
+                dgv.Refresh();
+                testdgv.Rows.Clear();
+
+
+                // intialize the variables
                 TotalTime_CCPP_Set = 0.0;
                 TotalTime_backNforth_Set = 0.0;
                 TotalTime_boundarySweep_Set = 0.0;
                 TotalCoverage_CCPP_Set = 0.0;
                 TotalCoverage_backNforth_Set = 0.0;
                 TotalCoverage_boundarySweep_Set = 0.0;
+                Average_backNforth = 0.0;
+                Average_boundarySweep = 0.0;
+                Average_newMethod = 0.0;
 
+                // rand number to choose quantity of each method 
+                var rnd = new Random(Guid.NewGuid().GetHashCode());
+                selectRand = rnd.Next(0, 11);
+                raA.Text = selectRand.ToString();
+                raB.Text = (10 - selectRand).ToString();
 
-                for (int i = 0; i < 1000; i++)
+                for (int j = 0; j < 10; j++)
                 {
-                    // randome numbers aaa
-                    rnd = new Random(Guid.NewGuid().GetHashCode());
-                    Lshort = rnd.Next(5, 51);
-                    Llong = rnd.Next(10, 151);
-                    Vd = rnd.NextDouble() * (0.50 - 0.28) + 0.28;
-                    Vr = rnd.Next(75, 136);
-                    R = rnd.NextDouble() * (0.50 - 0.40) + 0.40;
-
-                    testdgv.Rows.Add(i, Lshort, Llong, Vr, Vd, R);
-
-                    // call to functions to calculate
-                    //CCPP_Func(Lshort, Llong, Vd, Vr, R, pi);
-                    backNforth_Func(Lshort, Llong, Vd, Vr, R, pi, j);
-                    boundarySweep_Func(Lshort, Llong, Vd, Vr, R, pi, j);
-
-                    dgv2.Rows.Add(i, Math.Round(temp_backNforth_TotalTime, 1), Math.Round(temp_boundarySweep_TotalTime, 1), Math.Round(temp_CCPP_TotalTime, 1));
+                    //intialize the variables each set
+                    TotalTime_CCPP_Set = 0.0;
+                    TotalTime_backNforth_Set = 0.0;
+                    TotalTime_boundarySweep_Set = 0.0;
+                    TotalCoverage_CCPP_Set = 0.0;
+                    TotalCoverage_backNforth_Set = 0.0;
+                    TotalCoverage_boundarySweep_Set = 0.0;
 
 
+                    for (int i = 0; i < 1000; i++)
+                    {
+                        // randome numbers aaa
+                        rnd = new Random(Guid.NewGuid().GetHashCode());
+                        Lshort = rnd.Next(5, 51);
+                        Llong = rnd.Next(10, 151);
+                        Vd = rnd.NextDouble() * (0.50 - 0.28) + 0.28;
+                        Vr = rnd.Next(75, 136);
+                        R = rnd.NextDouble() * (0.50 - 0.40) + 0.40;
+
+                        testdgv.Rows.Add(i, Lshort, Llong, Vr, Vd, R);
+
+                        // call to functions to calculate
+                        //CCPP_Func(Lshort, Llong, Vd, Vr, R, pi);
+                        backNforth_Func(Lshort, Llong, Vd, Vr, R, pi, j);
+                        boundarySweep_Func(Lshort, Llong, Vd, Vr, R, pi, j);
+
+                        dgv2.Rows.Add(i, Math.Round(temp_backNforth_TotalTime, 1), Math.Round(temp_boundarySweep_TotalTime, 1), Math.Round(temp_CCPP_TotalTime, 1));
+
+
+                    }
+
+
+
+                    if (j <= selectRand)
+                    {
+                        dgv.Rows.Add(j + 1, Math.Round((TotalTime_backNforth_Set / 1000) / 3, 1), Math.Round((TotalTime_boundarySweep_Set / 1000) / 5, 1), Math.Round((TotalTime_CCPP_Set / 1000) / 3, 1));
+                        Average_backNforth += ((TotalTime_backNforth_Set / 1000) / 3);
+                        Average_boundarySweep += ((TotalTime_boundarySweep_Set / 1000) / 5);
+                        Average_newMethod += ((TotalTime_backNforth_Set / 1000) / 3);
+
+                    }
+                    else
+                    {
+                        dgv.Rows.Add(j + 1, Math.Round((TotalTime_backNforth_Set / 1000) / 3, 1), Math.Round((TotalTime_boundarySweep_Set / 1000) / 5, 1), Math.Round((TotalTime_CCPP_Set / 1000) / 5, 1));
+                        Average_backNforth += ((TotalTime_backNforth_Set / 1000) / 3);
+                        Average_boundarySweep += ((TotalTime_boundarySweep_Set / 1000) / 5);
+                        Average_newMethod += ((TotalTime_boundarySweep_Set / 1000) / 5);
+                    }
                 }
 
+                dgv.Rows.Add("Average", Math.Round((Average_backNforth / 10), 1), Math.Round((Average_boundarySweep / 10), 1), Math.Round((Average_newMethod / 10), 1));
 
-
-                if (j <= selectRand)
-                {
-                    dgv.Rows.Add(j + 1, Math.Round((TotalTime_backNforth_Set / 1000) / 3, 1), Math.Round((TotalTime_boundarySweep_Set / 1000) / 5, 1), Math.Round((TotalTime_CCPP_Set / 1000) / 3, 1));
-                    Average_backNforth += ((TotalTime_backNforth_Set/1000) / 3);
-                    Average_boundarySweep += ((TotalTime_boundarySweep_Set / 1000) / 5);
-                    Average_newMethod += ((TotalTime_backNforth_Set/1000) / 3);
-
-                }
-                else
-                {
-                    dgv.Rows.Add(j + 1, Math.Round((TotalTime_backNforth_Set / 1000) / 3, 1), Math.Round((TotalTime_boundarySweep_Set / 1000) / 5, 1), Math.Round((TotalTime_CCPP_Set / 1000) / 5, 1));
-                    Average_backNforth += ((TotalTime_backNforth_Set / 1000) / 3);
-                    Average_boundarySweep += ((TotalTime_boundarySweep_Set / 1000) / 5);
-                    Average_newMethod += ((TotalTime_boundarySweep_Set / 1000) / 5);
-                }
             }
 
-            dgv.Rows.Add("Average", Math.Round((Average_backNforth / 10), 1), Math.Round((Average_boundarySweep / 10), 1), Math.Round((Average_newMethod / 10), 1));
 
 
 
 
+        }
 
+        private void boundarySweepRoundRoom_Func(double radius, int llong, double vd, double vr, double r, double pi, int typeMethod)
+        {
+            
+            throw new NotImplementedException();
+        }
+
+        private void backNforthRoundRoom_Func(double radius, int llong, double vd, double vr, double r, double pi, int typeMethod)
+        {
+            temp_backNforth_Coverage = 1 - ((2 * R * R * (4 - pi) * ((int)(radius / R) + 1)) / (16 * Math.Pow(pi * radius, 2)));
+            double bnf_Tlong = (((Llong - R) * (radius / R)) / Vd);
+            double bnf_Tshort = ((radius - R) / Vd);
+            double bnf_Trotation = 90 * 2 * ((radius / R) / Vr);
+            temp_backNforth_TotalTime = bnf_Tlong + bnf_Tshort + bnf_Trotation;
+
+
+            TotalTime_backNforth_Set += temp_backNforth_TotalTime;
+            TotalCoverage_backNforth_Set += temp_backNforth_Coverage;
+
+            if (typeMethod <= selectRand)
+            {
+
+                TotalTime_CCPP_Set += temp_backNforth_TotalTime;
+                TotalCoverage_CCPP_Set += temp_backNforth_Coverage;
+
+            }
         }
 
         private void CCPP_Func(int Lshort,int Llong,double Vd,double Vr,double R,double pi,int typeMethod)

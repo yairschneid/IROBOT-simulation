@@ -87,6 +87,7 @@
             this.raA = new System.Windows.Forms.TextBox();
             this.raB = new System.Windows.Forms.TextBox();
             this.label20 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.testdgv)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv2)).BeginInit();
@@ -560,12 +561,24 @@
             this.label20.Text = "IRobot Cleaning";
             this.label20.Click += new System.EventHandler(this.label20_Click);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(576, 129);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(175, 17);
+            this.checkBox1.TabIndex = 34;
+            this.checkBox1.Text = "Check to simulate a round room";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // simulation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::irobot_simulation.Properties.Resources.background;
-            this.ClientSize = new System.Drawing.Size(1079, 817);
+            this.ClientSize = new System.Drawing.Size(1079, 733);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.raB);
             this.Controls.Add(this.raA);
@@ -682,6 +695,7 @@
         private System.Windows.Forms.TextBox raA;
         private System.Windows.Forms.TextBox raB;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 
