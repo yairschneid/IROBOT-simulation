@@ -60,7 +60,15 @@ namespace irobot_simulation
                 testdgv.Rows.Clear();
 
                 // intialize the variables
-
+                TotalTime_CCPP_Set = 0.0;
+                TotalTime_backNforth_Set = 0.0;
+                TotalTime_boundarySweep_Set = 0.0;
+                TotalCoverage_CCPP_Set = 0.0;
+                TotalCoverage_backNforth_Set = 0.0;
+                TotalCoverage_boundarySweep_Set = 0.0;
+                Average_backNforth = 0.0;
+                Average_boundarySweep = 0.0;
+                Average_newMethod = 0.0;
 
                 // rand number to choose quantity of each method 
                 var rnd = new Random(Guid.NewGuid().GetHashCode());
@@ -118,7 +126,6 @@ namespace irobot_simulation
                 }
 
                 dgv.Rows.Add("Average", Math.Round((Average_backNforth / 10), 1), Math.Round((Average_boundarySweep / 10), 1), Math.Round((Average_newMethod / 10), 1));
-
             }
             else
             {
@@ -208,35 +215,30 @@ namespace irobot_simulation
         }
 
         private void boundarySweepRoundRoom_Func(double radius, int llong, double vd, double vr, double r, double pi, int typeMethod)
-        {
-            
+        {           
             throw new NotImplementedException();
         }
 
         private void backNforthRoundRoom_Func(double radius, int llong, double vd, double vr, double r, double pi, int typeMethod)
         {
             temp_backNforth_Coverage = 1 - ((2 * R * R * (4 - pi) * ((int)(radius / R) + 1)) / (16 * Math.Pow(pi * radius, 2)));
-            double bnf_Tlong = (((Llong - R) * (radius / R)) / Vd);
-            double bnf_Tshort = ((radius - R) / Vd);
-            double bnf_Trotation = 90 * 2 * ((radius / R) / Vr);
+            double bnf_Tlong = (((Llong - R) * (Lshort / R)) / Vd);
+            double bnf_Tshort = ((Lshort - R) / Vd);
+            double bnf_Trotation = 90 * 2 * ((Lshort / R) / Vr);
             temp_backNforth_TotalTime = bnf_Tlong + bnf_Tshort + bnf_Trotation;
-
 
             TotalTime_backNforth_Set += temp_backNforth_TotalTime;
             TotalCoverage_backNforth_Set += temp_backNforth_Coverage;
 
             if (typeMethod <= selectRand)
             {
-
                 TotalTime_CCPP_Set += temp_backNforth_TotalTime;
                 TotalCoverage_CCPP_Set += temp_backNforth_Coverage;
-
             }
         }
 
         private void CCPP_Func(int Lshort,int Llong,double Vd,double Vr,double R,double pi,int typeMethod)
-        {
-            
+        {           
             temp_CCPP_Coverage = 1 - (((2 * R * R * (4 - pi) * ((int)(Lshort / R))) / (16 * Lshort * Llong)));
             double new_CTlong = (((((Lshort - R) / R) * (Llong - 2 * R)) + R) / Vd);
             double new_CTshort = 2 * ((Lshort - R) / Vd);
@@ -246,9 +248,6 @@ namespace irobot_simulation
 
             TotalCoverage_CCPP_Set += temp_CCPP_Coverage;
             TotalTime_CCPP_Set += temp_CCPP_TotalTime;
-
-
-
         }
 
         private void backNforth_Func(int Lshort, int Llong, double Vd, double Vr, double R, double pi,int typeMethod)
@@ -258,23 +257,16 @@ namespace irobot_simulation
             double bnf_Tshort = ((Lshort - R) / Vd);
             double bnf_Trotation = 90 * 2 * ((Lshort / R) / Vr);
             temp_backNforth_TotalTime = bnf_Tlong + bnf_Tshort + bnf_Trotation;
-
-           
+          
             TotalTime_backNforth_Set += temp_backNforth_TotalTime;
             TotalCoverage_backNforth_Set += temp_backNforth_Coverage;
 
             if(typeMethod<=selectRand)
             {
-
                 TotalTime_CCPP_Set += temp_backNforth_TotalTime;
                 TotalCoverage_CCPP_Set += temp_backNforth_Coverage;
-
             }
-
-
         }
-
-
 
         private void boundarySweep_Func(int Lshort, int Llong, double Vd, double Vr, double R, double pi,int typeMethod)
         {
@@ -288,27 +280,15 @@ namespace irobot_simulation
             double boundry_Treturn = Math.Sqrt(((Math.Pow(((Llong - R) / (2)), 2) + (Math.Pow((Lshort - R) / 2, 2)) / Vd)));
 
             temp_boundarySweep_TotalTime = boundry_Trotation + boundry_Tshort + boundry_Tlong;
-
-          
+     
             TotalCoverage_boundarySweep_Set += temp_boundarySweep_Coverage;
             TotalTime_boundarySweep_Set += temp_boundarySweep_TotalTime;
            
-
             if (typeMethod > selectRand)
             {
-
-
                 TotalTime_CCPP_Set += temp_boundarySweep_TotalTime;
                 TotalCoverage_CCPP_Set += temp_boundarySweep_Coverage;
             }
-
         }
-
-
-
-
-
-
-
     }
 }
